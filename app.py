@@ -7,7 +7,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api._errors import TranscriptsDisabled, NoTranscriptFound, VideoUnavailable
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app)
 api = Api(app,
           version="1.0",
           title="YouTube Transcript API",
@@ -27,6 +27,7 @@ transcript_response = api.model("TranscriptResponse", {
     "status": fields.String,
     "video_id": fields.String,
     "video_url": fields.String,
+    "thumbnail_url": fields.String,  # NEW FIELD
     "transcript": fields.List(fields.Nested(transcript_segment)),
     "transcript_type": fields.String,
     "language": fields.String,
@@ -81,18 +82,17 @@ class TranscriptAPI(Resource):
                 api.abort(404, "No transcripts found")
 
             transcript_data = transcript.fetch()
-            formatted = []
-            for entry in transcript_data:
-                formatted.append({
-                    'start': getattr(entry, 'start', 0.0),
-                    'duration': getattr(entry, 'duration', 0.0),
-                    'text': getattr(entry, 'text', '').strip()
-                })
+            formatted = [{
+                'start': getattr(entry, 'start', 0.0),
+                'duration': getattr(entry, 'duration', 0.0),
+                'text': getattr(entry, 'text', '').strip()
+            } for entry in transcript_data]
 
             return {
                 'status': 'success',
                 'video_id': video_id,
                 'video_url': f'https://www.youtube.com/watch?v={video_id}',
+                'thumbnail_url': f'https://img.youtube.com/vi/{video_id}/hqdefault.jpg',
                 'transcript': formatted,
                 'transcript_type': 'auto-generated' if transcript.is_generated else 'manual',
                 'language': transcript.language,
