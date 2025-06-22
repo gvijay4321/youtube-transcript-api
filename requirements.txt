@@ -2,3 +2,4 @@ Flask
 flask-restx
 flask-cors
 youtube-transcript-api
+gunicorn

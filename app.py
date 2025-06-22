@@ -106,6 +106,3 @@ class TranscriptAPI(Resource):
             api.abort(404, "Video is unavailable or private")
         except Exception as e:
             api.abort(500, f"Internal server error: {str(e)}")
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
