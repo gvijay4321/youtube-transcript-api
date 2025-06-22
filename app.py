@@ -107,6 +107,4 @@ class TranscriptAPI(Resource):
         except Exception as e:
             api.abort(500, f"Internal server error: {str(e)}")
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
 
